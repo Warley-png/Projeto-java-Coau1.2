@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package br.com.coau.persistence;
 
 import br.com.coau.persistence.JPAUtil;
@@ -40,7 +37,7 @@ public class JPADao {
             Query consulta = em.createQuery(sql);
             consulta.setParameter("login", login);
             consulta.setParameter("senha", senha);
-            //obtem o tipo de usuario(String)converte o que foi digitado em string
+            //A linha abaixo,obtem o tipo de usuario(String)converte o que foi digitado em string
             perfil = (String) consulta.getSingleResult();
         } catch (NoResultException e) {
             System.out.println("Usuário ou senha inválidos !");
@@ -299,7 +296,7 @@ public class JPADao {
     }
 
 
-//A linha de código abaixo e para verificar de quando for excluir cliente , o mesmo tem empréstimo ativo
+//A linha de código abaixo é para verificar  quando for excluir um cliente , o mesmo tem empréstimo ativo
     public boolean temEmprestimosAtivos(long clienteId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -541,7 +538,7 @@ public class JPADao {
             // Busca o aluguel ativo do livro
             AlugarLivro aluguel = em.createQuery("SELECT a FROM AlugarLivro a WHERE a.livro.idliv = :livroId AND a.status = true", AlugarLivro.class)
                     .setParameter("livroId", livroId)
-                    .getResultList() // Use getResultList() em vez de getSingleResult()
+                    .getResultList() 
                     .stream()
                     .findFirst() // Pega o primeiro resultado, se existir
                     .orElse(null); // Retorna null se não houver resultados

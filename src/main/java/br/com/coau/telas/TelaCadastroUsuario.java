@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package br.com.coau.telas;
 
 import br.com.coau.persistence.JPADao;
@@ -15,9 +12,7 @@ import javax.swing.JOptionPane;
  */
 public class TelaCadastroUsuario extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form CadastroUsuario
-     */
+    
     public TelaCadastroUsuario() {
         initComponents();
     }

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package br.com.coau.persistence;
 
 import jakarta.persistence.Entity;
@@ -11,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -87,7 +83,7 @@ public class AlugarLivro {
         this.status = status;
     }
 
-    // Método para marcar o aluguel como inativo e definir a data de devolução
+    // Método abaixo é para marcar o aluguel como inativo e definir a data de devolução
     public void devolverLivro() {
         this.status = false;
         this.dataretorno = new Date(); // Define a data de devolução como a data atual

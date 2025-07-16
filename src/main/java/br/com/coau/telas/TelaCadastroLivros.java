@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package br.com.coau.telas;
 
 import br.com.coau.persistence.JPADao;
@@ -20,9 +17,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
     private TelaAlugarLivro telaAlugarLivro;
     private String tipoUsuario;
 
-    /**
-     * Creates new form TelaCadastroLivros
-     */
+    
     public TelaCadastroLivros() {
         initComponents();
         listarTabela();
@@ -435,7 +430,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+        
         int setar = tblLivros.getSelectedRow();
         if (setar != -1) {
             long id = (Long) tblLivros.getModel().getValueAt(setar, 0);
@@ -465,17 +460,17 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void txtPesquisarLivroCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtPesquisarLivroCaretUpdate
-        // TODO add your handling code here:
+    
         pesquisarLivro();
     }//GEN-LAST:event_txtPesquisarLivroCaretUpdate
 
     private void tblLivrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblLivrosMouseClicked
-        // TODO add your handling code here:
+       
         setar_campos();
     }//GEN-LAST:event_tblLivrosMouseClicked
 
     private void btnDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletarActionPerformed
-        // TODO add your handling code here:
+        
         int setar = tblLivros.getSelectedRow(); // Obtém a linha selecionada na tabela
         if (setar != -1) {
             long id = (Long) tblLivros.getModel().getValueAt(setar, 0); // Obtém o ID do livro da tabela

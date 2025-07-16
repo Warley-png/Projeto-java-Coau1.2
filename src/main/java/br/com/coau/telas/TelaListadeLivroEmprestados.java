@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package br.com.coau.telas;
 
 import br.com.coau.persistence.AlugarLivro;
@@ -17,9 +14,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TelaListadeLivroEmprestados extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form TelaListadeLivroEmprestados
-     */
+    
     public TelaListadeLivroEmprestados() {
         initComponents();
         listarLivrosEmprestados();
@@ -147,7 +142,7 @@ public class TelaListadeLivroEmprestados extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtPesquisaCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtPesquisaCaretUpdate
-        // TODO add your handling code here:
+        
         pesquisarEmprestimo();
     }//GEN-LAST:event_txtPesquisaCaretUpdate
 
@@ -188,7 +183,7 @@ public class TelaListadeLivroEmprestados extends javax.swing.JInternalFrame {
             }
         }
     } catch (Exception e) {
-        e.printStackTrace(); // Imprime a pilha de erros para depuração
+        e.printStackTrace(); 
     }
 }
     public void atualizarListaEmprestados() {

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package br.com.coau.telas;
 
 import br.com.coau.persistence.JPADao;
@@ -160,7 +157,7 @@ public class TelaListaLivros extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAlugarActionPerformed
 
     private void txtPesquisaCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtPesquisaCaretUpdate
-        //Chamando metodo pesquisar por prateleira
+        //Chamando método pesquisar por prateleira
         pesquisarLivro();
 
     }//GEN-LAST:event_txtPesquisaCaretUpdate

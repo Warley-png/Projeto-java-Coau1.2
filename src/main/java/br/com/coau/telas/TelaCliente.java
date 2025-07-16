@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package br.com.coau.telas;
 
 import br.com.coau.persistence.Cliente;
@@ -19,9 +16,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     private TelaAlugarLivro telaAlugarLivro;
 
-    /**
-     * Creates new form TelaCliente
-     */
+   
     public TelaCliente() {
         initComponents();
         listarTabela();
@@ -395,7 +390,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblClientesMouseClicked
 
     private void btnEditarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarCliActionPerformed
-        // TODO add your handling code here:
+        
         int setar = tblClientes.getSelectedRow();
         if (setar != -1) {
             long id = (Long) tblClientes.getModel().getValueAt(setar, 0); 
@@ -420,13 +415,13 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEditarCliActionPerformed
 
     private void btnExcluirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirCliActionPerformed
-        // TODO add your handling code here:
+        
 
         int setar = tblClientes.getSelectedRow(); // Obtém a linha selecionada na tabela
         if (setar != -1) {
             long id = (Long) tblClientes.getModel().getValueAt(setar, 0); // Obtém o ID do cliente da tabela
 
-            // Cria uma instância do JPADao
+           
             JPADao jpd = new JPADao();
 
             // Verifica se o cliente tem empréstimos ativos

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
+
 package br.com.coau.telas;
 
 import br.com.coau.persistence.Cliente;
@@ -20,9 +17,7 @@ public class TelaAlugarLivro extends javax.swing.JInternalFrame {
 
     private TelaListadeLivroEmprestados telaListadeLivroEmprestados;
 
-    /**
-     * Creates new form AlugarLivro
-     */
+    
     public TelaAlugarLivro() {
         initComponents();
         atualizarTblClientes();
@@ -196,7 +191,7 @@ public class TelaAlugarLivro extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAlugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlugarActionPerformed
-        // TODO add your handling code here:
+     
         int selectedRowLivro = tblLivros.getSelectedRow();
         int selectedRowCliente = tblClientes.getSelectedRow();
 
@@ -230,7 +225,7 @@ public class TelaAlugarLivro extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnAlugarActionPerformed
 
     private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
-        // TODO add your handling code here:
+        
         int selectedRowLivro = tblLivros.getSelectedRow();
 
         if (selectedRowLivro == -1) {
