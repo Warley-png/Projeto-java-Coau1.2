@@ -1,24 +1,14 @@
 
 package br.com.coau.persistence;
 
-import br.com.coau.persistence.JPAUtil;
-import br.com.coau.persistence.Usuario;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
-import jakarta.persistence.Query;
-import java.sql.Timestamp;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.logging.Level;
-import javax.swing.JOptionPane;
-import java.util.logging.Logger;
-import org.slf4j.LoggerFactory;
 import jakarta.persistence.Query;
 
 /**
