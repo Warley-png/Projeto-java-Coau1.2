@@ -1,8 +1,9 @@
-
 package br.com.coau.telas;
 
 import br.com.coau.persistence.Cliente;
-import br.com.coau.persistence.JPADao;
+import br.com.coau.persistence.ClienteDAO;
+import br.com.coau.persistence.ClienteIMPL;
+import br.com.coau.persistence.JPAUtil;
 import br.com.coau.telas.TelaAlugarLivro;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -16,7 +17,6 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     private TelaAlugarLivro telaAlugarLivro;
 
-   
     public TelaCliente() {
         initComponents();
         listarTabela();
@@ -24,27 +24,26 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     }
 
-    public TelaCliente(TelaAlugarLivro telaAlugarLivro) { 
-        this.telaAlugarLivro = telaAlugarLivro; 
+    public TelaCliente(TelaAlugarLivro telaAlugarLivro) {
+        this.telaAlugarLivro = telaAlugarLivro;
         initComponents();
         listarTabela();
         atualizarTblClientes();
     }
 
     private void atualizarTblClientes() {
-        JPADao jpd = new JPADao();
-        List<Cliente> clientes = jpd.listarClientes();
-
+        ClienteDAO cliente = new ClienteIMPL(JPAUtil.getEntityManager());
+        List<Cliente> clientes = cliente.listarClientes();
         DefaultTableModel model = (DefaultTableModel) tblClientes.getModel();
         model.setRowCount(0);
 
-        for (Cliente cliente : clientes) {
+        for (Cliente c : clientes) {
             model.addRow(new Object[]{
-                cliente.getIdcli(),
-                cliente.getNomecli(),
-                cliente.getFonecli(),
-                cliente.getFacucli(),
-                cliente.getEmailcli()
+                c.getIdcli(),
+                c.getNomecli(),
+                c.getFonecli(),
+                c.getFacucli(),
+                c.getEmailcli()
             });
         }
     }
@@ -55,8 +54,8 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     private void pesquisarCliente() {
         String nome = txtCliPesquisar.getText();
-        JPADao jpd = new JPADao();
-        List<Cliente> clientes = jpd.pesquisarCliente(nome);
+        ClienteDAO cliente = new ClienteIMPL(JPAUtil.getEntityManager());
+        List<Cliente> clientes = cliente.pesquisarClientes(nome);
         DefaultTableModel tabela = (DefaultTableModel) tblClientes.getModel();
         tabela.setRowCount(0);
         if (clientes != null && !clientes.isEmpty()) {
@@ -77,7 +76,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
     public void setar_campos() {
         int setar = tblClientes.getSelectedRow();
-        txtIdCli.setText(tblClientes.getModel().getValueAt(setar,0).toString());
+        txtIdCli.setText(tblClientes.getModel().getValueAt(setar, 0).toString());
         txtNomeCli.setText(tblClientes.getModel().getValueAt(setar, 1).toString());
         txtFoneCli.setText(tblClientes.getModel().getValueAt(setar, 2).toString());
         txtFacuCli.setText(tblClientes.getModel().getValueAt(setar, 3).toString());
@@ -350,14 +349,13 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAdicionarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarCliActionPerformed
-        if ( 
-        txtNomeCli.getText().isEmpty() || 
-        txtFoneCli.getText().isEmpty()) {
-        
-        JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.", "Campos Vazios", JOptionPane.WARNING_MESSAGE);
-        return; 
-    }
-        
+        if (txtNomeCli.getText().isEmpty()
+                || txtFoneCli.getText().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.", "Campos Vazios", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         Cliente c = new Cliente();
         try {
 
@@ -365,9 +363,9 @@ public class TelaCliente extends javax.swing.JInternalFrame {
             c.setFonecli(txtFoneCli.getText());
             c.setFacucli(txtFacuCli.getText());
             c.setEmailcli(txtEmailcli.getText());
-
-            JPADao jpd = new JPADao();
-            jpd.adicionarclientes(c);
+            
+            ClienteDAO cliente = new ClienteIMPL(JPAUtil.getEntityManager());
+            cliente.adicionarClientes(c);
             JOptionPane.showMessageDialog(this, "Cadastro Realizado com Sucesso!");
             atualizarTblClientes();
             txtNomeCli.setText("");
@@ -390,17 +388,17 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblClientesMouseClicked
 
     private void btnEditarCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarCliActionPerformed
-        
+
         int setar = tblClientes.getSelectedRow();
         if (setar != -1) {
-            long id = (Long) tblClientes.getModel().getValueAt(setar, 0); 
+            long id = (Long) tblClientes.getModel().getValueAt(setar, 0);
             String nome = txtNomeCli.getText();
             String fone = txtFoneCli.getText();
             String facu = txtFacuCli.getText();
             String email = txtEmailcli.getText();
-
-            JPADao jpd = new JPADao();
-            jpd.editarCliente(nome, fone, facu, email, id);
+            
+            ClienteDAO cliente = new ClienteIMPL(JPAUtil.getEntityManager()) ;
+            cliente.editarCliente(nome, fone, facu, email, id);
             JOptionPane.showMessageDialog(this, "Dados do Cliente atualizado com sucesso!");
             atualizarTblClientes();
             txtIdCli.setText("");
@@ -415,17 +413,16 @@ public class TelaCliente extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEditarCliActionPerformed
 
     private void btnExcluirCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirCliActionPerformed
-        
 
-        int setar = tblClientes.getSelectedRow(); // Obtém a linha selecionada na tabela
+       int setar = tblClientes.getSelectedRow(); // Obtém a linha selecionada na tabela
         if (setar != -1) {
             long id = (Long) tblClientes.getModel().getValueAt(setar, 0); // Obtém o ID do cliente da tabela
 
-           
-            JPADao jpd = new JPADao();
+            // Cria uma instância do JPADao
+           ClienteDAO cliente = new ClienteIMPL(JPAUtil.getEntityManager()) ;
 
             // Verifica se o cliente tem empréstimos ativos
-            if (jpd.temEmprestimosAtivos(id)) {
+            if (cliente.temEmprestimosAtivos(id)) {
                 JOptionPane.showMessageDialog(this, "Este cliente não pode ser excluído porque ainda possui empréstimos de livros ativos.");
                 return;
             }
@@ -434,7 +431,7 @@ public class TelaCliente extends javax.swing.JInternalFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este cliente?", "Confirmação", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    jpd.excluirCliente(id); // Tenta excluir o cliente
+                    cliente.excluirCliente(id); // Tenta excluir o cliente
                     JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!");
                     txtNomeCli.setText("");
                     txtFoneCli.setText("");

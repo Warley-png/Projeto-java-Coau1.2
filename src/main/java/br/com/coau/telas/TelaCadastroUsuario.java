@@ -1,18 +1,13 @@
-
 package br.com.coau.telas;
 
-import br.com.coau.persistence.JPADao;
+import br.com.coau.persistence.JPAUtil;
 import br.com.coau.persistence.Usuario;
-import java.util.Optional;
+import br.com.coau.persistence.UsuarioDAO;
+import br.com.coau.persistence.UsuarioIMPL;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Warley
- */
 public class TelaCadastroUsuario extends javax.swing.JInternalFrame {
 
-    
     public TelaCadastroUsuario() {
         initComponents();
     }
@@ -246,10 +241,10 @@ public class TelaCadastroUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "ID de usuário inválido. Por favor, insira um número.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
         // Cria uma instância de JPADao e consulta o usuário
-        JPADao jpd = new JPADao();
-        Usuario usuario = jpd.consultarUsuario(iduser);
+        UsuarioDAO usuarioDAO = new UsuarioIMPL(JPAUtil.getEntityManager());
+        Usuario usuario = usuarioDAO.consultarUsuario(iduser);
+
         if (usuario != null) {
 
             txtUsuNome.setText(usuario.getUsuario());
@@ -286,8 +281,8 @@ public class TelaCadastroUsuario extends javax.swing.JInternalFrame {
             u.setSenha(txtUsuSenha.getText());
             u.setPerfil(cboUsuPerfil.getSelectedItem().toString());
 
-            JPADao jpd = new JPADao();
-            jpd.cadastrarUsuario(u);
+            UsuarioDAO usuarioDAO = new UsuarioIMPL(JPAUtil.getEntityManager());
+            usuarioDAO.cadastrarUsuario(u);
             JOptionPane.showMessageDialog(this, "Cadastro Realizado com Sucesso!");
 
         } catch (Exception e) {
@@ -318,13 +313,15 @@ public class TelaCadastroUsuario extends javax.swing.JInternalFrame {
             return;
         }
 
-        String usuario = txtUsuNome.getText();
-        String login = txtUsuLogin.getText();
-        String senha = txtUsuSenha.getText();
-        String perfil = (String) cboUsuPerfil.getSelectedItem();
+        Usuario u = new Usuario();
 
-        JPADao jpd = new JPADao();
-        jpd.editarusuario(usuario, login, senha, perfil, iduser);
+        u.setUsuario(txtUsuNome.getText());
+        u.setLogin(txtUsuLogin.getText());
+        u.setSenha(txtUsuSenha.getText());
+        u.setPerfil((String) cboUsuPerfil.getSelectedItem());
+
+        UsuarioDAO usuarioDAO = new UsuarioIMPL(JPAUtil.getEntityManager());
+        usuarioDAO.editarUsuario(u);
 
         JOptionPane.showMessageDialog(this, "Usuário atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         txtUsuId.setText(null);
@@ -353,9 +350,9 @@ public class TelaCadastroUsuario extends javax.swing.JInternalFrame {
                 String login = txtUsuLogin.getText();
                 String senha = txtUsuSenha.getText();
                 String perfil = (String) cboUsuPerfil.getSelectedItem();
-
-                JPADao jpd = new JPADao();
-                jpd.removerusuario(iduser);
+                
+                UsuarioDAO usuarioDAO = new UsuarioIMPL(JPAUtil.getEntityManager());
+                usuarioDAO.removerUsuario(iduser);
 
                 JOptionPane.showMessageDialog(this, "Usuário Removido com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 

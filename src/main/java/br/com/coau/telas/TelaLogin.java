@@ -1,7 +1,9 @@
 
 package br.com.coau.telas;
 
-import br.com.coau.persistence.JPADao;
+import br.com.coau.persistence.JPAUtil;
+import br.com.coau.persistence.UsuarioDAO;
+import br.com.coau.persistence.UsuarioIMPL;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 
@@ -147,42 +149,38 @@ public class TelaLogin extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtSenha;
     // End of variables declaration//GEN-END:variables
 
-    public void logar() {
-        String login = txtLogin.getText();
-        String senha = new String(txtSenha.getPassword());
-        JPADao jpd = new JPADao();
-        String tipoUsuario = jpd.validarUsuario(login, senha);
-       
-        if (tipoUsuario != null) {
-             
-            JOptionPane.showMessageDialog(null,  "Login realizado com sucesso!\n");
+   public void logar() {
+    String login = txtLogin.getText();
+    String senha = new String(txtSenha.getPassword());
+     
+    // Instanciar a classe que implementa UsuarioDAO
+    UsuarioDAO usuarioDAO = new UsuarioIMPL(JPAUtil.getEntityManager());
+    String tipoUsuario = usuarioDAO.validarUsuario(login, senha);
+    
+    if (tipoUsuario != null) {
+        JOptionPane.showMessageDialog(null, "Login realizado com sucesso!\n");
+        
+        // Criar a tela principal uma vez
+        TelaPrincipal tp = new TelaPrincipal();
+        tp.setVisible(true);
+        
+        if ("admin".equals(tipoUsuario)) {
+            TelaPrincipal.menCadCli.setEnabled(true);
+            TelaPrincipal.menCadUsu.setEnabled(true);
+            TelaPrincipal.menRelAluLiv.setEnabled(true);
+            TelaPrincipal.menRelEmpLiv.setEnabled(true);
+            TelaPrincipal.lblUsuario.setText(login);
            
-            if ("admin".equals(tipoUsuario)) {
-                TelaPrincipal tp = new TelaPrincipal();
-                tp.setVisible(true);
-                TelaPrincipal.menCadCli.setEnabled(true);
-                TelaPrincipal.menCadUsu.setEnabled(true);
-                TelaPrincipal.menRelAluLiv.setEnabled(true);
-                TelaPrincipal.menRelEmpLiv.setEnabled(true);
-                TelaPrincipal.lblUsuario.setText(login);
-                TelaPrincipal.lblUsuario.setForeground(Color.red);
-                
-               
-            } else if ("user".equals(tipoUsuario)) {
-                TelaPrincipal tp = new TelaPrincipal();
-                tp.setVisible(true);
-                 TelaPrincipal.lblUsuario.setText(login);
-                  TelaPrincipal.lblUsuario.setForeground(Color.blue);
-               
-            }
-           
-        } else {
-            
-            JOptionPane.showMessageDialog(null, "Usuário ou senha inválido!");
-            txtLogin.setText("");
-            txtSenha.setText("");
+            TelaPrincipal.lblUsuario.setForeground(Color.red);
+        } else if ("user".equals(tipoUsuario)) {
+            TelaPrincipal.lblUsuario.setText(login);
+            TelaPrincipal.lblUsuario.setForeground(Color.blue);
         }
+    } else {
+        JOptionPane.showMessageDialog(null, "Usuário ou senha inválido!");
+        txtLogin.setText("");
+        txtSenha.setText("");
     }
-
+   }
    
 }

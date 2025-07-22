@@ -1,9 +1,11 @@
 
 package br.com.coau.telas;
 
-import br.com.coau.persistence.JPADao;
+
+import br.com.coau.persistence.JPAUtil;
 import br.com.coau.persistence.Livros;
-import br.com.coau.telas.TelaAlugarLivro;
+import br.com.coau.persistence.LivrosDAO;
+import br.com.coau.persistence.LivrosIMPL;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -33,23 +35,24 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
     }
 
     private void atualizarTblLivros() {
-        JPADao jpd = new JPADao();
-        List<Livros> livros = jpd.listarLivros();
+        LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
+        List<Livros> livros = livro.listarLivros();
+
 
         DefaultTableModel model = (DefaultTableModel) tblLivros.getModel();
         model.setRowCount(0);
 
-        for (Livros livro : livros) {
+        for (Livros l : livros) {
             model.addRow(new Object[]{
-                livro.getIdliv(),
-                livro.getNomeliv(),
-                livro.getAutorliv(),
-                livro.getAssuntoliv(),
-                livro.getEditoraliv(),
-                livro.getAnorev(),
-                livro.getVolumerev(),
-                livro.getPrateleiraliv(),
-                livro.getTipo()
+                l.getIdliv(),
+                l.getNomeliv(),
+                l.getAutorliv(),
+                l.getAssuntoliv(),
+                l.getEditoraliv(),
+                l.getAno(),
+                l.getVolumerev(),
+                l.getPrateleiraliv(),
+                l.getTipo()
             });
         }
     }
@@ -60,8 +63,8 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
 
     private void pesquisarLivro() {
         String nome = txtPesquisarLivro.getText();
-        JPADao jpd = new JPADao();
-        List<Livros> livros = jpd.pesquisarlivro(nome);
+         LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
+        List<Livros> livros = livro.pesquisarLivros(nome);
         DefaultTableModel tabela = (DefaultTableModel) tblLivros.getModel();
         tabela.setRowCount(0);
         if (livros != null && !livros.isEmpty()) {
@@ -72,7 +75,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
                     l.getAutorliv(),
                     l.getAssuntoliv(),
                     l.getEditoraliv(),
-                    l.getAnorev(),
+                    l.getAno(),
                     l.getVolumerev(),
                     l.getPrateleiraliv(),
                     l.getTipo()
@@ -90,7 +93,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
         txtAutor.setText(tblLivros.getModel().getValueAt(setar, 2).toString());
         txtAssunto.setText(tblLivros.getModel().getValueAt(setar, 3).toString());
         txtEditora.setText(tblLivros.getModel().getValueAt(setar, 4).toString());
-        txtAnorev.setText(tblLivros.getModel().getValueAt(setar, 5).toString());
+        txtAno.setText(tblLivros.getModel().getValueAt(setar, 5).toString());
         txtVolumerev.setText(tblLivros.getModel().getValueAt(setar, 6).toString());
         cbPrateleira.setSelectedItem(tblLivros.getModel().getValueAt(setar, 7).toString());
         cboTipo.setSelectedItem(tblLivros.getModel().getValueAt(setar, 8).toString());
@@ -142,7 +145,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
         cbPrateleira = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        txtAnorev = new javax.swing.JTextField();
+        txtAno = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         txtVolumerev = new javax.swing.JTextField();
         cboTipo = new javax.swing.JComboBox<>();
@@ -324,7 +327,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(txtAssunto)
-                                            .addComponent(txtAnorev, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))))
+                                            .addComponent(txtAno, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel10)
@@ -378,7 +381,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(txtAnorev, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
                     .addComponent(txtVolumerev, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
@@ -400,20 +403,20 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
 
     private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
         //Adicionando um livro
-        Livros l = new Livros();
+       Livros l = new Livros();
         try {
             l.setNomeliv(txtTitulo.getText());
             l.setAutorliv(txtAutor.getText());
             l.setAssuntoliv(txtAssunto.getText());
             l.setEditoraliv(txtEditora.getText());
-            l.setAnorev(txtAnorev.getText());
+            l.setAno(txtAno.getText());
             l.setVolumerev(txtVolumerev.getText());
             l.setPrateleiraliv(cbPrateleira.getSelectedItem().toString());
             l.setTipo(cboTipo.getSelectedItem().toString());
             l.setDisponivelliv(true);
 
-            JPADao jpd = new JPADao();
-            jpd.CadastarLivros(l);
+            LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
+            livro.cadastrarLivro(l);
             JOptionPane.showMessageDialog(this, "Livro Cadastrado com Sucesso!");
             atualizarTblLivros();
 
@@ -425,33 +428,33 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
         txtAutor.setText("");
         txtAssunto.setText("");
         txtEditora.setText("");
-        txtAnorev.setText("");
+        txtAno.setText("");
         txtVolumerev.setText("");
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         
-        int setar = tblLivros.getSelectedRow();
+         int setar = tblLivros.getSelectedRow();
         if (setar != -1) {
             long id = (Long) tblLivros.getModel().getValueAt(setar, 0);
             String titulo = txtTitulo.getText();
             String autor = txtAutor.getText();
             String assunto = txtAssunto.getText();
             String editora = txtEditora.getText();
-            String ano = txtAnorev.getText();
+            String ano = txtAno.getText();
             String volume = txtVolumerev.getText();
-            String prateleira = cbPrateleira.getSelectedItem().toString();
+            String prateleiraliv = cbPrateleira.getSelectedItem().toString();
             String tipo = cboTipo.getSelectedItem().toString();
 
-            JPADao jpd = new JPADao();
-            jpd.editarLivro(titulo, autor, assunto, editora, ano, volume, prateleira, tipo, id);
+           LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
+            livro.editarLivro(titulo, autor, assunto, editora, ano, volume, prateleiraliv, tipo, id);
             JOptionPane.showMessageDialog(this, "Dados do Livro atualizado com sucesso!");
             atualizarTblLivros();
             txtTitulo.setText("");
             txtAutor.setText("");
             txtAssunto.setText("");
             txtEditora.setText("");
-            txtAnorev.setText("");
+            txtAno.setText("");
             txtVolumerev.setText("");
             btnAdicionar.setEnabled(true);
         } else {
@@ -471,21 +474,21 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
 
     private void btnDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletarActionPerformed
         
-        int setar = tblLivros.getSelectedRow(); // Obtém a linha selecionada na tabela
+       int setar = tblLivros.getSelectedRow(); // Obtém a linha selecionada na tabela
         if (setar != -1) {
             long id = (Long) tblLivros.getModel().getValueAt(setar, 0); // Obtém o ID do livro da tabela
 
-            JPADao jpd = new JPADao();
+            LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
 
             // Verifica se o livro tem empréstimos ativos
-            if (jpd.EmprestimosAtivos(id)) {
+            if (livro.EmprestimosAtivos(id)) {
                 JOptionPane.showMessageDialog(this, "Este Livro não pode ser excluído porque ainda possui empréstimos ativos.");
 
                 txtTitulo.setText("");
                 txtAutor.setText("");
                 txtAssunto.setText("");
                 txtEditora.setText("");
-                txtAnorev.setText("");
+                txtAno.setText("");
                 txtVolumerev.setText("");
                 btnAdicionar.setEnabled(true);
                 return;
@@ -494,14 +497,14 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este Livro?", "Confirmação", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    jpd.excluirlivro(id);
+                    livro.excluirlivro(id);
                     JOptionPane.showMessageDialog(this, "Livro excluído com sucesso!");
 
                     txtTitulo.setText("");
                     txtAutor.setText("");
                     txtAssunto.setText("");
                     txtEditora.setText("");
-                    txtAnorev.setText("");
+                    txtAno.setText("");
                     txtVolumerev.setText("");
                     btnAdicionar.setEnabled(true);
 
@@ -515,7 +518,6 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Selecione um Livro para excluir.");
         }
-
 
     }//GEN-LAST:event_btnDeletarActionPerformed
 
@@ -544,7 +546,7 @@ public class TelaCadastroLivros extends javax.swing.JInternalFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable tblLivros;
-    private javax.swing.JTextField txtAnorev;
+    private javax.swing.JTextField txtAno;
     private javax.swing.JTextField txtAssunto;
     private javax.swing.JTextField txtAutor;
     private javax.swing.JTextField txtEditora;

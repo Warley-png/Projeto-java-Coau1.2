@@ -1,10 +1,14 @@
-
 package br.com.coau.telas;
 
 import br.com.coau.persistence.AlugarLivro;
 import br.com.coau.persistence.Cliente;
-import br.com.coau.persistence.JPADao;
+import br.com.coau.persistence.ClienteDAO;
+import br.com.coau.persistence.ClienteIMPL;
+import br.com.coau.persistence.JPAUtil;
 import br.com.coau.persistence.Livros;
+import br.com.coau.persistence.LivrosDAO;
+import br.com.coau.persistence.LivrosIMPL;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -14,7 +18,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TelaListadeLivroEmprestados extends javax.swing.JInternalFrame {
 
-    
     public TelaListadeLivroEmprestados() {
         initComponents();
         listarLivrosEmprestados();
@@ -142,7 +145,7 @@ public class TelaListadeLivroEmprestados extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtPesquisaCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtPesquisaCaretUpdate
-        
+
         pesquisarEmprestimo();
     }//GEN-LAST:event_txtPesquisaCaretUpdate
 
@@ -158,65 +161,85 @@ public class TelaListadeLivroEmprestados extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtPesquisa;
     // End of variables declaration//GEN-END:variables
 
-   private void listarLivrosEmprestados() {
-    JPADao jpd = new JPADao();
-    List<AlugarLivro> emprestimos = jpd.listarEmprestimos();
-    DefaultTableModel model = (DefaultTableModel) tblListaEmprestimo.getModel();
-    model.setRowCount(0); // Limpa a tabela antes de adicionar novos dados
+    private void listarLivrosEmprestados() {
+        EntityManager em = JPAUtil.getEntityManager();
+        LivrosDAO livroDAO = new LivrosIMPL(em);
+        ClienteDAO clienteDAO = new ClienteIMPL(em);
+        List<AlugarLivro> emprestimos = livroDAO.listarEmprestimos();
+        DefaultTableModel model = (DefaultTableModel) tblListaEmprestimo.getModel();
+        model.setRowCount(0);
 
-    try {
-        // Verifica se a lista de empréstimos não é nula
-        if (emprestimos != null) {
-            for (AlugarLivro emprestimo : emprestimos) {
-                Livros livro = emprestimo.getLivro();
-                Cliente cliente = jpd.buscarClientePorId(emprestimo.getCliente().getIdcli()); // Passa o ID do cliente
+        try {
+            // Verifica se a lista de empréstimos não é nula
+            if (emprestimos != null && !emprestimos.isEmpty()) {
+                for (AlugarLivro emprestimo : emprestimos) {
+                    Livros livro = emprestimo.getLivro();
+                    Cliente cliente = clienteDAO.buscarClientePorId(emprestimo.getCliente().getIdcli());
 
-                if (livro != null && cliente != null) {
-                    model.addRow(new Object[]{
-                        emprestimo.getIdret(),
-                        livro.getNomeliv(),
-                        emprestimo.getDatasaida(),
-                        emprestimo.getDataretorno(),
-                        cliente.getNomecli()
-                    });
+                    if (livro != null && cliente != null) {
+                        model.addRow(new Object[]{
+                            emprestimo.getIdret(),
+                            livro.getNomeliv(),
+                            emprestimo.getDatasaida(),
+                            emprestimo.getDataretorno(),
+                            cliente.getNomecli()
+                        });
+                    } else {
+                        System.out.println("Livro ou cliente não encontrado para o empréstimo ID: " + emprestimo.getIdret());
+                    }
                 }
+            } else {
+                System.out.println("Nenhum empréstimo encontrado.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime a pilha de erros para depuração
+        } finally {
+            if (em.isOpen()) {
+                em.close();
             }
         }
-    } catch (Exception e) {
-        e.printStackTrace(); 
     }
-}
+
+    private void pesquisarEmprestimo() {
+        String titulo = txtPesquisa.getText();
+        EntityManager em = JPAUtil.getEntityManager();
+        LivrosDAO livroDAO = new LivrosIMPL(em);
+        List<AlugarLivro> emprestimos = livroDAO.pesquisarEmprestimo(titulo);
+        DefaultTableModel tabela = (DefaultTableModel) tblListaEmprestimo.getModel();
+        tabela.setRowCount(0); // Limpa a tabela antes de adicionar novos dados
+
+        try {
+            if (emprestimos != null && !emprestimos.isEmpty()) {
+                for (AlugarLivro a : emprestimos) {
+                    // Obtém o cliente diretamente do objeto AlugarLivro
+                    Cliente cliente = a.getCliente();
+                    String nomeCliente = (cliente != null) ? cliente.getNomecli() : "Cliente não encontrado";
+
+                    // Verifica se o livro não é nulo antes de acessar suas propriedades
+                    Livros livro = a.getLivro();
+                    String nomeLivro = (livro != null) ? livro.getNomeliv() : "Livro não encontrado";
+
+                    tabela.addRow(new Object[]{
+                        a.getIdret(),
+                        nomeLivro,
+                        a.getDatasaida(),
+                        a.getDataretorno(),
+                        nomeCliente
+                    });
+                }
+            } else {
+                System.out.println("Nenhum Empréstimo encontrado para este Livro !");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
     public void atualizarListaEmprestados() {
         listarLivrosEmprestados();
     }
-
-  private void pesquisarEmprestimo() {
-    String titulo = txtPesquisa.getText(); 
-    JPADao jpd = new JPADao();
-    List<AlugarLivro> emprestimos = jpd.pesquisarEmprestimo(titulo); 
-    DefaultTableModel tabela = (DefaultTableModel) tblListaEmprestimo.getModel();
-    tabela.setRowCount(0); // Limpa a tabela antes de adicionar novos dados
-
-    if (emprestimos != null && !emprestimos.isEmpty()) {
-        for (AlugarLivro a : emprestimos) {
-            // Obtém o cliente diretamente do objeto AlugarLivro
-            Cliente cliente = a.getCliente(); // Obtenha o cliente diretamente
-            String nomeCliente = (cliente != null) ? cliente.getNomecli() : "Cliente não encontrado";
-
-            // Verifica se o livro não é nulo antes de acessar suas propriedades
-            Livros livro = a.getLivro();
-            String nomeLivro = (livro != null) ? livro.getNomeliv() : "Livro não encontrado";
-
-            tabela.addRow(new Object[]{
-                a.getIdret(),
-                nomeLivro, 
-                a.getDatasaida(),
-                a.getDataretorno(),
-                nomeCliente 
-            });
-        }
-    } else {
-        System.out.println("Nenhum Empréstimo encontrado para este Livro !");
-    }
-}
 }

@@ -2,8 +2,13 @@
 package br.com.coau.telas;
 
 import br.com.coau.persistence.Cliente;
-import br.com.coau.persistence.JPADao;
+import br.com.coau.persistence.ClienteDAO;
+import br.com.coau.persistence.ClienteIMPL;
+import br.com.coau.persistence.JPAUtil;
+
 import br.com.coau.persistence.Livros;
+import br.com.coau.persistence.LivrosDAO;
+import br.com.coau.persistence.LivrosIMPL;
 import br.com.coau.telas.TelaListadeLivroEmprestados;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -207,14 +212,15 @@ public class TelaAlugarLivro extends javax.swing.JInternalFrame {
         long livroId = (long) tblLivros.getModel().getValueAt(selectedRowLivro, 0);
         long clienteId = (long) tblClientes.getModel().getValueAt(selectedRowCliente, 0);
 
-        JPADao jpd = new JPADao();
-        Livros livroSelecionado = jpd.buscarLivroPorId(livroId);
+        LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
+        Livros livroSelecionado = livro.buscarLivroPorId(livroId);
+        
         if (livroSelecionado == null || !livroSelecionado.isDisponivelliv()) {
             JOptionPane.showMessageDialog(this, "Este livro já está alugado.");
             return;
         }
 
-        boolean sucesso = jpd.alugarLivro(clienteId, livroId);
+        boolean sucesso = livro.alugarLivro(clienteId, livroId);
         if (sucesso) {
             JOptionPane.showMessageDialog(this, "Livro alugado com sucesso!");
             atualizarTabela();
@@ -235,8 +241,8 @@ public class TelaAlugarLivro extends javax.swing.JInternalFrame {
 
         long livroId = (long) tblLivros.getModel().getValueAt(selectedRowLivro, 0);
 
-        JPADao jpd = new JPADao();
-        boolean sucesso = jpd.devolverLivro(livroId);
+        LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
+        boolean sucesso = livro.devolverLivro(livroId);
         if (sucesso) {
             JOptionPane.showMessageDialog(this, "Livro devolvido com sucesso!");
             atualizarTabela();
@@ -261,17 +267,17 @@ public class TelaAlugarLivro extends javax.swing.JInternalFrame {
     private javax.swing.JTable tblLivros;
     // End of variables declaration//GEN-END:variables
  private void atualizarTblClientes() {
-    JPADao jpd = new JPADao();
-    List<Cliente> clientes = jpd.listarClientes();
+   ClienteDAO cliente = new ClienteIMPL(JPAUtil.getEntityManager()) ;
+    List<Cliente> clientes = cliente.listarClientes();
 
     DefaultTableModel model = (DefaultTableModel) tblClientes.getModel();
     model.setRowCount(0);
 
-    for (Cliente cliente : clientes) {
+    for (Cliente c : clientes) {
         model.addRow(new Object[]{
-            cliente.getIdcli(),
-            cliente.getNomecli(),
-            cliente.getFonecli()
+            c.getIdcli(),
+            c.getNomecli(),
+            c.getFonecli()
         });
     }
 }
@@ -281,8 +287,8 @@ public class TelaAlugarLivro extends javax.swing.JInternalFrame {
     }
 
     private void listaLivros() {
-        JPADao jpd = new JPADao();
-        List<Livros> listar = jpd.listarLivros();
+         LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager()) ;
+        List<Livros> listar = livro.listarLivros();
         DefaultTableModel tabela = (DefaultTableModel) tblLivros.getModel();
         tabela.setRowCount(0);
         if (listar != null) {

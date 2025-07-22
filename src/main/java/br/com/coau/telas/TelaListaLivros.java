@@ -1,8 +1,10 @@
 
 package br.com.coau.telas;
 
-import br.com.coau.persistence.JPADao;
+import br.com.coau.persistence.JPAUtil;
 import br.com.coau.persistence.Livros;
+import br.com.coau.persistence.LivrosDAO;
+import br.com.coau.persistence.LivrosIMPL;
 
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -14,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TelaListaLivros extends javax.swing.JInternalFrame {
 
-    JPADao jpd = new JPADao();
+    LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
 
     public TelaListaLivros() {
         initComponents();
@@ -176,8 +178,8 @@ public class TelaListaLivros extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtPesquisa;
     // End of variables declaration//GEN-END:variables
 
-    private void listaLivros() {
-        List<Livros> listar = jpd.listarLivros();
+   private void listaLivros() {
+        List<Livros> listar = livro.listarLivros();
         DefaultTableModel tabela = (DefaultTableModel) tblLivros.getModel();
         tabela.setRowCount(0);
         if (listar != null) {
@@ -202,15 +204,15 @@ public class TelaListaLivros extends javax.swing.JInternalFrame {
 
     private void pesquisarLivro() {
         String nome = txtPesquisa.getText().trim();
-        JPADao jpd = new JPADao();
+        LivrosDAO livro = new LivrosIMPL(JPAUtil.getEntityManager());
         // Está condição verificar se o nome da prateleira existe 
-        if (!jpd.prateleiracad(nome)) {
+        if (!livro.prateleiracad(nome)) {
             System.out.println("A prateleira '" + nome + "' não existe.");
             JOptionPane.showMessageDialog(this, "A prateleira '" + nome + "' não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        List<Livros> livros = jpd.pesquisarlivros(nome);
+        List<Livros> livros = livro.pesquisarlivros(nome);
         DefaultTableModel tabela = (DefaultTableModel) tblLivros.getModel();
         tabela.setRowCount(0);
 

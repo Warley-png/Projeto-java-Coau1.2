@@ -147,7 +147,7 @@
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="txtAssunto" max="32767" attributes="0"/>
-                                          <Component id="txtAnorev" pref="224" max="32767" attributes="0"/>
+                                          <Component id="txtAno" pref="224" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -221,7 +221,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txtAnorev" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtAno" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtVolumerev" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -483,7 +483,7 @@
         <Property name="text" type="java.lang.String" value="Ano"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtAnorev">
+    <Component class="javax.swing.JTextField" name="txtAno">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>

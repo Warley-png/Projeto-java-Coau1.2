@@ -23,19 +23,19 @@ public class Livros {
     private String autorliv;
     private String assuntoliv;
     private String editoraliv;
-    private String anorev;
+    private String ano;
     private String volumerev;
     private String tipo;
     private String prateleiraliv;
     public boolean disponivelliv;
 
     
-    public String getAnorev() {
-        return anorev;
+    public String getAno() {
+        return ano;
     }
 
-    public void setAnorev(String anorev) {
-        this.anorev = anorev;
+    public void setAno(String ano) {
+        this.ano = ano;
     }
 
     public String getVolumerev() {
